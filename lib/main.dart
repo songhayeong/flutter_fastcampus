@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sliver_example/examples.dart';
+import 'package:sliver_example/future_builder_exam/ex_1.dart';
+import 'package:sliver_example/inherited_widget_exam/ex_1.dart';
+import 'package:sliver_example/inherited_widget_exam/ex_2.dart';
 import 'package:sliver_example/stream_builder_exam/ex_1.dart';
 import 'package:sliver_example/stream_builder_exam/ex_2.dart';
 
@@ -19,12 +22,15 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: PracticeListPage(),
+      home: const PracticeListPage(),
       initialRoute: '/',
       routes: {
         '/sliver': (context) => const SliverExampleNavigatorList(),
-        '/clock': (context) => ClockScreen(),
-        '/stop_watch': (context) => StopWatchScreen(),
+        '/clock': (context) => const ClockScreen(),
+        '/stop_watch': (context) => const StopWatchScreen(),
+        '/future_demo':(context) => const FutureBuilderExample1(),
+        '/counter_inherited': (context) => const CounterInheritedExample(),
+        '/user_setting_inherited': (context) => const InheritedWidgetExample2(),
         //'/stream_builder': (context) => const Stream
       },
     );
@@ -52,7 +58,7 @@ class PracticeListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('fastcampus practice'),
+        title: const Text('fastcampus practice'),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -62,25 +68,52 @@ class PracticeListPage extends StatelessWidget {
             onPressed: () {
               Navigator.pushNamed(context, '/sliver');
             },
-            child: Text('SliverExampleNavigatorList'),
+            child: const Text('SliverExampleNavigatorList'),
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.pushNamed(context, '/clock');
             },
-            child: Text('Clock Stream'),
+            child: const Text('Clock Stream'),
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.pushNamed(context, '/stop_watch');
             },
-            child: Text('Stop Watch Stream Builder'),
+            child: const Text('Stop Watch Stream Builder'),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/future_demo');
+            },
+            child: const Text('Future Builder Demo'),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/counter_inherited');
+            },
+            child: const Text('Counter Inherited Widget'),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/user_setting_inherited');
+            },
+            child: const Text('User Setting Inherited Widget'),
           ),
         ],
       ),
@@ -95,7 +128,7 @@ class SliverExampleNavigatorList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "sliver examples",
           style: TextStyle(color: Colors.white),
         ),
