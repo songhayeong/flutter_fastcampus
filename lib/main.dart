@@ -1,17 +1,20 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:sliver_example/bloc_fastcampus/pages/step_one.dart';
 import 'package:sliver_example/examples.dart';
 import 'package:sliver_example/future_builder_exam/ex_1.dart';
 import 'package:sliver_example/inherited_widget_exam/ex_1.dart';
 import 'package:sliver_example/inherited_widget_exam/ex_2.dart';
+import 'package:sliver_example/stream_builder_exam/bloc/stopwatch_bloc.dart';
 import 'package:sliver_example/stream_builder_exam/ex_1.dart';
-import 'package:sliver_example/stream_builder_exam/ex_2.dart';
 import 'package:sliver_example/todo_cache_exam/api/api_service.dart';
 import 'package:sliver_example/todo_cache_exam/data/todo_repository.dart';
 import 'package:sliver_example/todo_cache_exam/model/todo.dart';
 import 'package:sliver_example/todo_cache_exam/todo_screen.dart';
+import 'package:sliver_example/stream_builder_exam/stopwatch_screen.dart';
 import 'package:dio/dio.dart';
 
 void main() async {
@@ -38,7 +41,10 @@ class MyApp extends StatelessWidget {
       routes: {
         '/sliver': (context) => const SliverExampleNavigatorList(),
         '/clock': (context) => const ClockScreen(),
-        '/stop_watch': (context) => const StopWatchScreen(),
+        '/stop_watch_with_bloc': (context) => BlocProvider<StopwatchBloc>(
+              create: (context) => StopwatchBloc(),
+              child: const StopWatchScreen(),
+            ),
         '/future_demo': (context) => const FutureBuilderExample1(),
         '/counter_inherited': (context) => const CounterInheritedExample(),
         '/user_setting_inherited': (context) => const InheritedWidgetExample2(),
@@ -53,7 +59,7 @@ class MyApp extends StatelessWidget {
                 Hive.box<ToDo>('todoBox'),
               ),
             ),
-        //'/stream_builder': (context) => const Stream
+        '/register_bloc_page': (context) => const RegistrationPage(),
       },
     );
   }
@@ -106,7 +112,7 @@ class PracticeListPage extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/stop_watch');
+              Navigator.pushNamed(context, '/stop_watch_with_bloc');
             },
             child: const Text('Stop Watch Stream Builder'),
           ),
@@ -146,6 +152,15 @@ class PracticeListPage extends StatelessWidget {
             },
             child: const Text('To Do List'),
           ),
+          const SizedBox(
+            height: 10,
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pushNamed(context, '/register_bloc_page');
+            },
+            child: const Text('Register Bloc'),
+          ),
         ],
       ),
     );
@@ -176,6 +191,30 @@ class SliverExampleNavigatorList extends StatelessWidget {
                   builder: (context) => _examples[index]['widget'],
                 ));
           },
+        ),
+      ),
+    );
+  }
+}
+
+class RegistrationPage extends StatelessWidget {
+  const RegistrationPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Registration'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const StepOne()));
+          },
+          child: const Text(
+            'Start Registration',
+          ),
         ),
       ),
     );

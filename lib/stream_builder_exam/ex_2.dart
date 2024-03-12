@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:sliver_example/stream_builder_exam/util/utils.dart';
 
 class StopWatchScreen extends StatefulWidget {
   const StopWatchScreen({super.key});
@@ -10,13 +11,15 @@ class StopWatchScreen extends StatefulWidget {
 }
 
 class _StopWatchScreenState extends State<StopWatchScreen> {
-
   final Stopwatch _stopwatch = Stopwatch();
   final Duration _tick = const Duration(milliseconds: 10); // 10 밀리초 간격
 
   late Timer _timer;
   late StreamController<int> _streamController;
 
+  final List<String> _laps = [];
+
+  //bloc StopwatchStarted
   void _startTimer() {
     if (!_stopwatch.isRunning) {
       _stopwatch.start();
@@ -27,6 +30,7 @@ class _StopWatchScreenState extends State<StopWatchScreen> {
     }
   }
 
+  //bloc StopwatchStoped
   void _stopTimer() {
     if (_stopwatch.isRunning) {
       _stopwatch.stop();
@@ -34,9 +38,23 @@ class _StopWatchScreenState extends State<StopWatchScreen> {
     }
   }
 
+  //bloc stopwatch Reset
   void _resetTimer() {
     _stopwatch.reset();
     _streamController.add(0);
+    setState(() {
+      _laps.clear();
+    });
+  }
+
+
+  //bloc stopwatch reset
+  void _recordLap() {
+    final milliseconds = _stopwatch.elapsedMilliseconds;
+    final lapTime = formatElapsedTime(milliseconds);
+    setState(() {
+      _laps.add(lapTime);
+    });
   }
 
   @override
@@ -58,28 +76,31 @@ class _StopWatchScreenState extends State<StopWatchScreen> {
       appBar: AppBar(
         title: const Text(' 스톱 워치 '),
       ),
-      body: Center(
-          child: StreamBuilder<int>(
-            stream: _streamController.stream,
-            builder: (context, snapshot) {
-              final milliseconds = snapshot.data ?? 0;
-
-              final hours = ((milliseconds / (1000 * 60 * 60)) % 24).floor();
-              final minutes = ((milliseconds / (1000 * 60)) % 60).floor();
-              final seconds = ((milliseconds / 1000) % 60).floor();
-              final millisecondsDisplay = (milliseconds % 1000).floor();
-
-              return Text(
-                '${hours.toString().padLeft(2, '0')}:${minutes.toString()
-                    .padLeft(2, '0')}:${seconds.toString().padLeft(
-                    2, '0')}:${millisecondsDisplay.toString().padLeft(2, '0')}',
-                style: TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold
-                ),
-              );
-            },
-          )
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(
+            child: StreamBuilder<int>(
+              stream: _streamController.stream,
+              builder: (context, snapshot) {
+                final milliseconds = snapshot.data ?? 0;
+                return Text(
+                  formatElapsedTime(milliseconds),
+                  style: const TextStyle(
+                      fontSize: 40, fontWeight: FontWeight.bold),
+                );
+              },
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: _laps.length,
+              itemBuilder: (context, index) => ListTile(
+                title: Text("Lap ${index + 1} : ${_laps[index]}"),
+              ),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -87,17 +108,22 @@ class _StopWatchScreenState extends State<StopWatchScreen> {
           FloatingActionButton(
             onPressed: _startTimer,
             tooltip: '시작',
-            child: Icon(Icons.play_arrow),
+            child: const Icon(Icons.play_arrow),
           ),
           FloatingActionButton(
             onPressed: _stopTimer,
             tooltip: '정지',
-            child: Icon(Icons.stop),
+            child: const Icon(Icons.stop),
           ),
           FloatingActionButton(
             onPressed: _resetTimer,
             tooltip: '초기화',
-            child: Icon(Icons.refresh),
+            child: const Icon(Icons.refresh),
+          ),
+          FloatingActionButton(
+            onPressed: _recordLap,
+            tooltip: '랩 기록',
+            child: const Icon(Icons.flag),
           ),
         ],
       ),
