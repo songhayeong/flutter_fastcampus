@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:sliver_example/bloc_fastcampus/bloc/email/email_bloc.dart';
+import 'package:sliver_example/bloc_fastcampus/bloc/name/name_bloc.dart';
 import 'package:sliver_example/bloc_fastcampus/pages/step_one.dart';
 import 'package:sliver_example/examples.dart';
 import 'package:sliver_example/future_builder_exam/ex_1.dart';
@@ -209,8 +211,14 @@ class RegistrationPage extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const StepOne()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => MultiBlocProvider(providers: [
+                          BlocProvider(
+                            create: (context) => EmailBloc(),
+                          ),
+                        ], child: const StepOne())));
           },
           child: const Text(
             'Start Registration',
